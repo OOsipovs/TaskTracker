@@ -1,0 +1,16 @@
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.vs
+**/.vscode
+**/*.*proj.user
+**/bin
+**/obj
+**/Dockerfile*
+**/docker-compose*
+**/node_modules
+**/.toolstarget
+**/*.db
+**/*.db-shm
+**/*.db-wal

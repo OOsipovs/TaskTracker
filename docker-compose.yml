@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  authservice:
+    build:
+      context: .                              # Build context is solution root
+      dockerfile: AuthService.API/Dockerfile  # Path to Dockerfile from context
+    container_name: tasktracker-authservice
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Data Source=/data/authservice.db
+    volumes:
+      - auth-data:/data
+    networks:
+      - tasktracker-network
+
+  taskservice:
+    build:
+      context: .                              # Build context is solution root
+      dockerfile: TaskService.API/Dockerfile  # Path to Dockerfile from context
+    container_name: tasktracker-taskservice
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Data Source=/data/taskservice.db
+    volumes:
+      - task-data:/data
+    networks:
+      - tasktracker-network
+    depends_on:
+      - authservice
+
+volumes:
+  auth-data:
+  task-data:
+
+networks:
+  tasktracker-network:
+    driver: bridge
