@@ -1,0 +1,68 @@
+<div class="task-list-container">
+    <div class="header">
+      <h2>My Tasks</h2>
+      <button class="btn btn-primary" (click)="openCreateForm()">
+        + New Task
+      </button>
+    </div>
+  
+    <div class="error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+  
+    <div class="loading" *ngIf="isLoading">
+      Loading tasks...
+    </div>
+  
+    <div class="tasks" *ngIf="!isLoading">
+      <div class="empty-state" *ngIf="tasks.length === 0">
+        <p>No tasks yet. Create your first task!</p>
+      </div>
+  
+      <div class="task-card" *ngFor="let task of tasks" [class.completed]="task.isCompleted">
+        <div class="task-header">
+          <div class="task-title-row">
+            <input 
+              type="checkbox" 
+              [checked]="task.isCompleted" 
+              (change)="toggleTaskCompletion(task)"
+              class="task-checkbox"
+            />
+            <h3 [class.strike-through]="task.isCompleted">{{ task.title }}</h3>
+          </div>
+          <span class="priority-badge" [ngClass]="getPriorityClass(task.priority)">
+            {{ getPriorityLabel(task.priority) }}
+          </span>
+        </div>
+  
+        <p class="task-description" *ngIf="task.description">
+          {{ task.description }}
+        </p>
+  
+        <div class="task-meta">
+          <span class="due-date" *ngIf="task.dueDate">
+            📅 Due: {{ task.dueDate | date:'short' }}
+          </span>
+          <span class="created-date">
+            Created: {{ task.createdAt | date:'short' }}
+          </span>
+        </div>
+  
+        <div class="task-actions">
+          <button class="btn btn-secondary" (click)="openEditForm(task)">
+            Edit
+          </button>
+          <button class="btn btn-danger" (click)="deleteTask(task.id)">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <app-task-form 
+    *ngIf="showTaskForm" 
+    [task]="editingTask"
+    (close)="closeForm()"
+    (taskSaved)="onTaskSaved()"
+  ></app-task-form>

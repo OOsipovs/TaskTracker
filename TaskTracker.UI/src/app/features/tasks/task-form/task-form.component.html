@@ -1,0 +1,77 @@
+<div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditMode ? 'Edit Task' : 'Create New Task' }}</h2>
+        <button class="close-btn" (click)="onClose()">&times;</button>
+      </div>
+  
+      <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="title">Title *</label>
+          <input 
+            type="text" 
+            id="title" 
+            formControlName="title" 
+            class="form-control"
+            placeholder="Enter task title"
+          />
+          <div class="error" *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
+            <span *ngIf="taskForm.get('title')?.errors?.['required']">Title is required</span>
+            <span *ngIf="taskForm.get('title')?.errors?.['maxlength']">Title must be less than 200 characters</span>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea 
+            id="description" 
+            formControlName="description" 
+            class="form-control"
+            rows="4"
+            placeholder="Enter task description"
+          ></textarea>
+          <div class="error" *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched">
+            <span *ngIf="taskForm.get('description')?.errors?.['maxlength']">Description must be less than 1000 characters</span>
+          </div>
+        </div>
+  
+        <div class="form-row">
+          <div class="form-group">
+            <label for="priority">Priority *</label>
+            <select id="priority" formControlName="priority" class="form-control">
+              <option *ngFor="let option of priorityOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+  
+          <div class="form-group">
+            <label for="dueDate">Due Date</label>
+            <input 
+              type="datetime-local" 
+              id="dueDate" 
+              formControlName="dueDate" 
+              class="form-control"
+            />
+          </div>
+        </div>
+  
+        <div class="error" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+  
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="onClose()">
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary" 
+            [disabled]="taskForm.invalid || isLoading"
+          >
+            {{ isLoading ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
