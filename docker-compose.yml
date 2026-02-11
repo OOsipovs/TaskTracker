@@ -1,10 +1,10 @@
-version: '3.8'
+﻿version: '3.8'
 
 services:
   authservice:
     build:
-      context: .                              # Build context is solution root
-      dockerfile: AuthService.API/Dockerfile  # Path to Dockerfile from context
+      context: .
+      dockerfile: AuthService.API/Dockerfile
     container_name: tasktracker-authservice
     ports:
       - "5001:80"
@@ -12,6 +12,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Data Source=/data/authservice.db
+      - JwtSettings__Secret=YourSuperSecretKeyForJWTTokenGenerationMustBeAtLeast32Characters
+      - JwtSettings__Issuer=TaskTrackerAuthService
+      - JwtSettings__Audience=TaskTrackerClients
+      - JwtSettings__ExpirationInMinutes=1440
     volumes:
       - auth-data:/data
     networks:
@@ -19,8 +23,8 @@ services:
 
   taskservice:
     build:
-      context: .                              # Build context is solution root
-      dockerfile: TaskService.API/Dockerfile  # Path to Dockerfile from context
+      context: .
+      dockerfile: TaskService.API/Dockerfile
     container_name: tasktracker-taskservice
     ports:
       - "5002:80"
@@ -28,12 +32,32 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Data Source=/data/taskservice.db
+      - JwtSettings__Secret=YourSuperSecretKeyForJWTTokenGenerationMustBeAtLeast32Characters
+      - JwtSettings__Issuer=TaskTrackerAuthService
+      - JwtSettings__Audience=TaskTrackerClients
+      - JwtSettings__ExpirationInMinutes=1440
     volumes:
       - task-data:/data
     networks:
       - tasktracker-network
     depends_on:
       - authservice
+
+  ui:
+    build:
+      context: .
+      dockerfile: TaskTracker.UI/Dockerfile
+    container_name: tasktracker-ui
+    ports:
+      - "4200:4200"
+    volumes:
+      # Enable hot-reload for development
+      - ./TaskTracker.UI/src:/app/src
+    networks:
+      - tasktracker-network
+    depends_on:
+      - authservice
+      - taskservice
 
 volumes:
   auth-data:

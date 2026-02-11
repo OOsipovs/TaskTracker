@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaskService.Domain\TaskService.Domain.csproj" />
+    <ProjectReference Include="..\TaskService.Application\TaskService.Application.csproj" />
   </ItemGroup>
 
 </Project>
