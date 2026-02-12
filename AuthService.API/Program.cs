@@ -1,4 +1,4 @@
-using AuthService.Application.Interfaces;
+﻿using AuthService.Application.Interfaces;
 using AuthService.Application.Services;
 using AuthService.Domain.Interfaces;
 using AuthService.Infrastructure.Data;
@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using TaskTracker.Shared;
+using TaskTracker.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -117,6 +118,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseGlobalExceptionHandler();
+
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -134,11 +137,25 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Apply migrations
-using (var scope = app.Services.CreateScope())
+try
 {
+    using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-    dbContext.Database.Migrate();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    logger.LogInformation("Applying database migrations...");
+    await dbContext.Database.MigrateAsync();
+    logger.LogInformation("Database migrations applied successfully");
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogCritical(ex, "Failed to apply database migrations");
+    
+    if (!app.Environment.IsDevelopment())
+    {
+        throw; // Don't start the app in production if migrations fail
+    }
 }
 
 app.Run();

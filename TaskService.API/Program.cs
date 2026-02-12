@@ -10,6 +10,7 @@ using TaskService.Domain.Interfaces;
 using TaskService.Infrastructure.Data;
 using TaskService.Infrastructure.Repositories;
 using TaskTracker.Shared;
+using TaskTracker.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -116,6 +117,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseGlobalExceptionHandler();
+
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -134,10 +137,25 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Apply migrations
-using (var scope = app.Services.CreateScope())
+try
 {
+    using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
-    dbContext.Database.Migrate();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    logger.LogInformation("Applying database migrations...");
+    await dbContext.Database.MigrateAsync();
+    logger.LogInformation("Database migrations applied successfully");
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogCritical(ex, "Failed to apply database migrations");
+    
+    if (!app.Environment.IsDevelopment())
+    {
+        throw;
+    }
 }
 
 app.Run();
