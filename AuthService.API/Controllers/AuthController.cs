@@ -20,24 +20,9 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpPost("register")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
-        {
-            return BadRequest(new { message = "Username and password are required" });
-        }
-
-        if (request.Username.Length < 3)
-        {
-            return BadRequest(new { message = "Username must be at least 3 characters long" });
-        }
-
-        if (request.Password.Length < 6)
-        {
-            return BadRequest(new { message = "Password must be at least 6 characters long" });
-        }
-
         var response = await _authService.RegisterAsync(request);
 
         if (response == null)
@@ -54,13 +39,9 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
-        {
-            return BadRequest(new { message = "Username and password are required" });
-        }
-
         var response = await _authService.LoginAsync(request);
 
         if (response == null)

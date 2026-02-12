@@ -111,7 +111,20 @@ dotnet run
 - The service should now be running at `http://localhost:5266`
 - Access Swagger UI at `http://localhost:5266/swagger`
 
-### Step 3: Run Angular Frontend
+### Step 3: Update API URLs in Frontend
+
+Open **src/environments/environment.ts** in the Angular project.
+Update the URLs for `apiAuthUrl` and `apiTasksUrl` to match your local AuthService and TaskService URLs, e.g.,
+
+```typescript
+export const environment = {
+    production: false,
+    authApiUrl: 'http://localhost:5141/api',
+    taskApiUrl: 'http://localhost:5266/api'
+  };
+```
+
+### Step 4: Run Angular Frontend
 
 Open **TaskTracker/ClientApp** folder in your terminal.
 Run the following commands:
@@ -123,18 +136,6 @@ ng serve
 
 - The frontend should now be running at `http://localhost:4200`
 
-### Step 4: Update API URLs in Frontend
-
-Open **src/environments/environment.ts** in the Angular project.
-Update the URLs for `apiAuthUrl` and `apiTasksUrl` to match your local AuthService and TaskService URLs, e.g.,
-
-```typescript
-export const environment = {
-  production: false,
-  apiAuthUrl: 'http://localhost:5141/api/auth/',
-  apiTasksUrl: 'http://localhost:5266/api/tasks/'
-};
-```
 
 ### Step 5: Access the Application
 

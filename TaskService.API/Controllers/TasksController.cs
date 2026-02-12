@@ -89,16 +89,11 @@ public class TasksController : ControllerBase
     [HttpPost]
     [SwaggerOperation(Summary = "Create a new task", Description = "Creates a task for the authenticated user.")]
     [SwaggerResponse(StatusCodes.Status201Created, "Task created", typeof(TaskItemDto))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error", typeof(ValidationProblemDetails))]
     public async Task<IActionResult> CreateTask([FromBody] CreateTaskRequest request)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.Title))
-            {
-                return BadRequest(new { message = "Title is required" });
-            }
-
             var userId = GetUserId();
             var task = await _taskService.CreateTaskAsync(request, userId);
 
@@ -116,17 +111,12 @@ public class TasksController : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(TaskItemDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> UpdateTask(int id, [FromBody] UpdateTaskRequest request)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.Title))
-            {
-                return BadRequest(new { message = "Title is required" });
-            }
-
             var userId = GetUserId();
             var task = await _taskService.UpdateTaskAsync(id, request, userId);
 
