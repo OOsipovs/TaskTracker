@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
-    authApiUrl: 'https://localhost:7062/api',
-    taskApiUrl: 'https://localhost:7233/api'
+    authApiUrl: 'http://localhost:5001/api',
+    taskApiUrl: 'http://localhost:5002/api'
   };
