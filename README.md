@@ -88,7 +88,7 @@ Both services will start automatically with Swagger UI.
 #### Option B: Using Command Line
 
 **Terminal 1 - AuthService:**
-Open **TaskTracker/AuthService** folder in your terminal.
+Open **TaskTracker/AuthService.API** folder in your terminal.
 Run the following commands:
 
 ```
@@ -96,11 +96,11 @@ dotnet restore
 dotnet run
 ```
 
-- The service should now be running at `http://localhost:5001`
-- Access Swagger UI at `http://localhost:5001/swagger`
+- The service should now be running at `http://localhost:5141`
+- Access Swagger UI at `http://localhost:5141/swagger`
 
 **Terminal 2 - TaskService:**
-Open **TaskTracker/TaskService** folder in your terminal.
+Open **TaskTracker/TaskService.API** folder in your terminal.
 Run the following commands:
 
 ```
@@ -108,8 +108,8 @@ dotnet restore
 dotnet run
 ```
 
-- The service should now be running at `http://localhost:5002`
-- Access Swagger UI at `http://localhost:5002/swagger`
+- The service should now be running at `http://localhost:5266`
+- Access Swagger UI at `http://localhost:5266/swagger`
 
 ### Step 3: Run Angular Frontend
 
@@ -131,8 +131,8 @@ Update the URLs for `apiAuthUrl` and `apiTasksUrl` to match your local AuthServi
 ```typescript
 export const environment = {
   production: false,
-  apiAuthUrl: 'http://localhost:5001/api/auth/',
-  apiTasksUrl: 'http://localhost:5002/api/tasks/'
+  apiAuthUrl: 'http://localhost:5141/api/auth/',
+  apiTasksUrl: 'http://localhost:5266/api/tasks/'
 };
 ```
 
