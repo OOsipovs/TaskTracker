@@ -81,7 +81,9 @@ cd TaskTracker
 3. Select **Configure Startup Projects**
 4. Choose **Multiple startup projects**
 5. Set both `AuthService.API` and `TaskService.API` to **Start**
-6. Click **OK** and press **F5** to run
+6. Click **OK**
+7. **Important:** In the toolbar, select **http** from the launch profile dropdown (instead of https) before running
+8. Press **F5** to run
 
 Both services will start automatically with Swagger UI.
 
